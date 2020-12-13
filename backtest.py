@@ -4,6 +4,7 @@ import numpy as np
 from service import DataCleaner, TechIndicatorEngine, CCI, SMA
 from model import BacktestTradeRecord, BacktestReport
 from config import DATE_TIME, CLOSE, OPEN_POSITION, CLOSE_POSITION, NO_EVENT, BULLISH, BEARISH
+from utilities import object_list_contains_object
 
 class Backtest():
     
@@ -32,20 +33,13 @@ class Backtest():
                 for param in rule.indicators_param:
                     
                     if param.name not in self.data.columns:
-                        if not self.object_list_contains_object(self.all_ti_param, param):
+                        if not object_list_contains_object(self.all_ti_param, param):
                             
                             name = self.make_name([i.name for i in self.all_ti_param], param.name)
                             rule.ref[param.name] = name
                             param.name = name
                             self.all_ti_param.append(param)
-                        
-    @staticmethod
-    def object_list_contains_object(obj_list, obj):
-        for obj_temp in obj_list:
-            if obj_temp == obj:
-                return True
-        return False
-    
+                           
     @staticmethod
     def make_name(name_list, target):
         if target not in name_list:

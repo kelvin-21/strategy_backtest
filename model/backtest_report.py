@@ -29,7 +29,7 @@ class BacktestReport():
                 'occ_profit': df[df['trade_return'] > 0].shape[0],
                 'occ_loss': df[df['trade_return'] < 0].shape[0],
                 'return_average': df['trade_return'].mean(),
-                'return_average_geo': np.prod(df['trade_return'] + 1),
+                'return_average_geo': np.prod(df['trade_return'] + 1) - 1,
                 'return_std': df['trade_return'].std()}
             self.general_report = self.general_report.append(new_row, ignore_index=True)
             
@@ -42,7 +42,7 @@ class BacktestReport():
             'occ_profit': self.general_report['occ_profit'].sum(),
             'occ_loss': self.general_report['occ_loss'].sum(),
             'return_average': trade_record['trade_return'].mean(),
-            'return_average_geo': np.prod(trade_record['trade_return'] + 1),
+            'return_average_geo': np.prod(trade_record['trade_return'] + 1) - 1,
             'return_std': trade_record['trade_return'].std()}
         self.general_report = self.general_report.append(new_row, ignore_index=True)
 

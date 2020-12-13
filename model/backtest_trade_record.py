@@ -3,6 +3,8 @@ from config import OPEN_POSITION, CLOSE_POSITION, BULLISH, BEARISH
 import pandas as pd
 import numpy as np
 
+pd.options.mode.chained_assignment = None  # default='warn'
+
 class BacktestTradeRecord():
     def __init__(self):
         self.df = None
@@ -32,7 +34,7 @@ class BacktestTradeRecord():
         for strategy in strategies:
 
             strategy_trade_record = self.df[self.df['strategy_name'] == strategy.name]
-            strategy_trade_record['original_ix'] = strategy_trade_record.index
+            strategy_trade_record['original_ix'] = strategy_trade_record.index.copy()
             strategy_trade_record = strategy_trade_record.reset_index()
 
             for i in strategy_trade_record.index:
