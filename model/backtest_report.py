@@ -1,23 +1,53 @@
 import pandas as pd
 import numpy as np
 
-from config import CLOSE_POSITION
+from config import OPEN_POSITION, CLOSE_POSITION, DATE_TIME
 
 class BacktestReport():
     def __init__(self):
         self.general_report = None
         self.return_report = None
         self.occurrence_report = None
+        self.trade_summary = None
 
     def initialize(self, strategies):
         self.initialize_general_report()
         self.initialize_return_report()
         self.initialize_occurrence_report()
+        self.initialize_trade_summary()
 
     def generate_report(self, strategies: list, trade_record: pd.DataFrame):
+        self.generate_trade_summary(strategies, trade_record)
+
         self.generate_general_report(strategies, trade_record)
         self.generate_return_report(strategies, trade_record)
         self.generate_occurrence_report(strategies, trade_record)
+
+    def generate_trade_summary(self, strategies: list, trade_record: pd.DataFrame):
+        
+        for strategy in strategies:
+            df = trade_record[trade_record['strategy_name'] == strategy.name]
+            df['original_ix'] = df.index.copy()
+            df = df.reset_index(drop=True)
+
+            for i in df.index:
+
+                if df.at[i, 'event'] == OPEN_POSITION:
+                    
+                    close_pos = df[i:][df['event'] == CLOSE_POSITION].reset_index(drop=True)
+
+                    if len(close_pos) > 0:
+                        new_row = {
+                            'entry_date_time': df.at[i, DATE_TIME],
+                            'exit_date_time': close_pos.at[0, DATE_TIME],
+                            'duration': None,
+                            'strategy_name': strategy.name,
+                            'rule': close_pos.at[0, 'rule'],
+                            'entry_price': df.at[i, 'price'],
+                            'exit_price': close_pos.at[0, 'price'],
+                            'trade_return': close_pos.at[0, 'trade_return']
+                        }
+
 
     def generate_general_report(self, strategies: list, trade_record: pd.DataFrame):
         for strategy in strategies:
@@ -67,3 +97,14 @@ class BacktestReport():
 
     def initialize_occurrence_report(self):
         pass
+
+    def initialize_trade_summary(self, trade_record):
+        self.trade_summary = pd.DataFrame()
+        self.trade_summary['entry_date_time'] = None
+        self.trade_summary['exit_date_time'] = None
+        self.trade_summary['duration'] = None
+        self.trade_summary['strategy_name'] = None
+        self.trade_summary['rule'] = None
+        self.trade_summary['entry_price'] = None
+        self.trade_summary['exit_price'] = None
+        self.trade_summary['trade_return'] = None
