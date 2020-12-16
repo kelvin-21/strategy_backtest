@@ -45,6 +45,6 @@ class TradeSummary(Report):
                         }
                         self.df = self.df.append(new_row, ignore_index=True)
 
-        self.df = self.df.sort_values(by=DATE_TIME)
+        self.df = self.df.sort_values(by=ENTRY_T)
         self.df = self.df.reset_index(drop=True)
                     

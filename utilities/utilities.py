@@ -1,5 +1,6 @@
 import pandas as pd
 from openpyxl import load_workbook
+from datetime import datetime
 
 from config import represent_in_precentage, represent_with_comma, represent_as_integer, represent_as_decimal
 
@@ -30,7 +31,7 @@ def write_new_sheet(writer, df, sheet_name):
     workbook = writer.book
     format_percent = workbook.add_format({'num_format': '0.0000%'})
     format_comma = workbook.add_format({'num_format': '#,##0.00'})
-    format_integer = workbook.add_format({'num_format': '#,##'})
+    format_integer = workbook.add_format({'num_format': '#,##0'})
     format_decimal = workbook.add_format({'num_format': '0.0000'})
 
     df.to_excel(writer, sheet_name=sheet_name, index=False)
@@ -61,8 +62,18 @@ def write_new_sheet(writer, df, sheet_name):
 
     print('[OUTPUT] Completed writing new sheet {}'.format(sheet_name))
 
-def index_to_col_letter(i):
+def index_to_col_letter(i: int) -> str:
     return chr(ord('A') + i)
 
-def decimal_to_presentage(x):
+def decimal_to_presentage(x: float) -> str:
     return '{:.4%}'.format(x)
+
+def dtStr_to_dt(date_time_str: str):
+    return datetime.strptime(date_time_str, '%Y-%m-%d %H:%M')
+
+
+if __name__ == '__main__':
+    print('hello')
+    date_time_str = '2012-02-03 10:15'
+    date_time_obj = datetime.strptime(date_time_str, '%Y-%m-%d %H:%M')
+    print(date_time_obj.year, date_time_obj.month, date_time_obj.day, date_time_obj.hour, date_time_obj.minute)

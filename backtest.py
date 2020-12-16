@@ -2,9 +2,10 @@ import pandas as  pd
 import numpy as np
 
 from service import DataCleaner, TechIndicatorEngine, CCI, SMA
-from model import BacktestTradeRecord, BacktestReport
 from config import DATE_TIME, CLOSE, OPEN_POSITION, CLOSE_POSITION, NO_EVENT, BULLISH, BEARISH
 from utilities import object_list_contains_object
+from backtest_report import BacktestReport
+from backtest_trade_record import BacktestTradeRecord
 
 class Backtest():
     

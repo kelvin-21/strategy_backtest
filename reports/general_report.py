@@ -13,8 +13,8 @@ class GeneralReport(Report):
         self.df[OCC] = None
         self.df[OCC_PROFIT] = None
         self.df[OCC_LOSS] = None
-        self.df[RETURN_AVG] = None
-        self.df[RETURN_STD] = None
+        # self.df[RETURN_AVG] = None
+        # self.df[RETURN_STD] = None
         self.df[RETURN_GEO] = None
 
     def generate(self, strategies: list, trade_summary: pd.DataFrame):
@@ -27,19 +27,19 @@ class GeneralReport(Report):
                 OCC:            df.shape[0],
                 OCC_PROFIT:     df[df[RETURN] > 0].shape[0],
                 OCC_LOSS:       df[df[RETURN] < 0].shape[0],
-                RETURN_AVG:     df[RETURN].mean(),
-                RETURN_STD:     df[RETURN].std(),
+                # RETURN_AVG:     df[RETURN].mean(),
+                # RETURN_STD:     df[RETURN].std(),
                 RETURN_GEO:     np.prod(df[RETURN] + 1) - 1
             }
             self.df = self.df.append(new_row, ignore_index=True)
-            
-            new_row = {
-                STRATEGY:       SUMMARY,
-                OCC:            self.df[OCC].sum(),
-                OCC_PROFIT:     self.df[OCC_PROFIT].sum(),
-                OCC_LOSS:       self.df[OCC_LOSS].sum(),
-                RETURN_AVG:     trade_summary[RETURN].mean(),
-                RETURN_STD:     trade_summary[RETURN_STD].std(),
-                RETURN_GEO:     np.prod(trade_summary[RETURN] + 1) - 1.
-            }
-            self.df = self.df.append(new_row, ignore_index=True)
+        
+        summary_row = {
+            STRATEGY:       SUMMARY,
+            OCC:            self.df[OCC].sum(),
+            OCC_PROFIT:     self.df[OCC_PROFIT].sum(),
+            OCC_LOSS:       self.df[OCC_LOSS].sum(),
+            # RETURN_AVG:     trade_summary[RETURN].mean(),
+            # RETURN_STD:     trade_summary[RETURN].std(),
+            RETURN_GEO:     np.prod(trade_summary[RETURN] + 1) - 1.
+        }
+        self.df = self.df.append(summary_row, ignore_index=True)
