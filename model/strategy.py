@@ -1,3 +1,5 @@
+import logging
+
 from config import OPEN_POSITION, CLOSE_POSITION, NO_EVENT
 
 class Strategy():
@@ -34,5 +36,5 @@ class Strategy():
                 if rule.f(data, rule.ref, self.entry_index, current_index):
                     return rule.name
             except Exception as e:
-                print('[ERROR] {} {} {}'.format(current_index, rule.name, e))
+                logging.debug('[ERROR] {} {} {}'.format(current_index, rule.name, e))
         return False

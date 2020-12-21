@@ -1,3 +1,5 @@
+import logging
+
 from config.const import TI_CCI, TI_SMA
 from .cci import CCI
 from .sma import SMA
@@ -16,7 +18,7 @@ class TechIndicatorEngine():
         else:
             raise ValueError('[ERROR] Unknown technical indicator: {}'.format(ti_param.name))
         
-        print('[TechIndicatorEngine] Finished computation of {}'.format(ti_param.name))
+        logging.info('[TechIndicatorEngine] Finished computation of {}'.format(ti_param.name))
         return data
     
     @staticmethod

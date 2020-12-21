@@ -17,8 +17,17 @@ class BacktestReport():
         self.return_report.initialize()
         self.occurrence_report.initialize()
 
-    def generate_report(self, strategies: list, trade_record: pd.DataFrame):
+    def generate_report(self, strategies: list, trade_record: pd.DataFrame, only=None):
         self.trade_summary.generate(strategies, trade_record)
-        self.general_report.generate(strategies, self.trade_summary.df)
-        self.return_report.generate(strategies, self.trade_summary.df)
-        self.occurrence_report.generate(strategies, self.trade_summary.df)
+
+        if not only:
+            self.general_report.generate(strategies, self.trade_summary.df)
+            self.return_report.generate(strategies, self.trade_summary.df)
+            self.occurrence_report.generate(strategies, self.trade_summary.df)
+
+        elif only == 'general_report':
+            self.general_report.generate(strategies, self.trade_summary.df)
+        elif only == 'return_report':
+            self.return_report.generate(strategies, self.trade_summary.df)
+        elif only == 'occurrence_report':
+            self.occurrence_report.generate(strategies, self.trade_summary.df)

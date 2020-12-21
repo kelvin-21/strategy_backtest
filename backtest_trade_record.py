@@ -38,7 +38,7 @@ class BacktestTradeRecord():
 
             strategy_trade_record = self.df[self.df[STRATEGY] == strategy.name]
             strategy_trade_record['original_ix'] = strategy_trade_record.index.copy()
-            strategy_trade_record = strategy_trade_record.reset_index()
+            strategy_trade_record = strategy_trade_record.reset_index(drop=True)
 
             for i in strategy_trade_record.index:
 

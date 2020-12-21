@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 from openpyxl import load_workbook
 from datetime import datetime
 
@@ -10,21 +11,6 @@ def object_list_contains_object(obj_list, obj):
         if obj_temp == obj:
             return True
     return False
-
-# def save_to_excel(df, excel_name, sheet_name):
-
-#     try:
-#         book = load_workbook(excel_name)
-#         writer = pd.ExcelWriter(excel_name, engine='openpyxl') # pylint: disable=abstract-class-instantiated
-#         writer.book = book
-#         writer.sheets = dict((ws.title, ws) for ws in book.worksheets)
-#         write_new_sheet(writer, df, sheet_name)
-#     except Exception as e:
-#         print('[ERROR]', e)
-#         writer = pd.ExcelWriter(excel_name, engine='xlsxwriter') # pylint: disable=abstract-class-instantiated
-#         write_new_sheet(writer, df, sheet_name)
-    
-#     writer.close()
 
 def write_new_sheet(writer, df, sheet_name):
     
@@ -54,10 +40,16 @@ def write_new_sheet(writer, df, sheet_name):
     # adjust col width
     for idx, col in enumerate(df):  # loop through all columns
         series = df[col]
-        max_len = max((
-            series.astype(str).map(len).max(),  # len of largest item
-            len(str(series.name))  # len of column name/header
+        if col in represent_in_precentage:
+            max_len = max((
+                series.astype(str).map(dp_4).map(len).max() + 1, # adding 1 for % sign
+                len(str(series.name))  # len of column name/header
             )) + 1  # adding a little extra space
+        else:
+            max_len = max((
+                series.astype(str).map(len).max(),  # len of largest item
+                len(str(series.name))  # len of column name/header
+                )) + 1  # adding a little extra space
         worksheet.set_column(idx, idx, max_len)  # set column width
 
     print('[OUTPUT] Completed writing new sheet {}'.format(sheet_name))
@@ -65,15 +57,60 @@ def write_new_sheet(writer, df, sheet_name):
 def index_to_col_letter(i: int) -> str:
     return chr(ord('A') + i)
 
+def dp_4(x: str) -> str:
+    i = x.find('.')
+    if i == -1:
+        return x
+    else:
+        return x[:i+5]
+
 def decimal_to_presentage(x: float) -> str:
     return '{:.4%}'.format(x)
 
 def dtStr_to_dt(date_time_str: str):
     return datetime.strptime(date_time_str, '%Y-%m-%d %H:%M')
 
+def str_time_diff_in_days(start:str, end:str) -> int:
+    start_obj = dtStr_to_dt(start)
+    end_obj = dtStr_to_dt(end)
+    return (end_obj - start_obj).days
+
+def df_contains_dict(df: pd.DataFrame, my_dict: dict) -> bool:
+    if len(my_dict) == 0:
+        raise ValueError('[ERROR] empty dict')
+
+    result = set()
+    flag = 0
+
+    for key in my_dict.keys():
+        if my_dict[key]:
+            if type(my_dict[key]) is tuple:
+                temp = set(df[df[key] == str(my_dict[key])].index)
+            else:
+                temp = set(df[df[key] == my_dict[key]].index)
+        else:
+            temp = set(df[df[key].isnull()].index)
+
+        if flag == 0:
+            result = temp
+            flag = 1
+        else:
+            result = result.intersection(temp)
+            if len(result) == 0:
+                return False
+    return True
+
 
 if __name__ == '__main__':
-    print('hello')
-    date_time_str = '2012-02-03 10:15'
-    date_time_obj = datetime.strptime(date_time_str, '%Y-%m-%d %H:%M')
-    print(date_time_obj.year, date_time_obj.month, date_time_obj.day, date_time_obj.hour, date_time_obj.minute)
+    df = pd.DataFrame()
+    df['A'] = [10.9999, 20.77777 ,30.888 ,40.22, 40.12345678, 5.2, 60]
+    df['B'] = [120, 240 ,310 ,430, 40, 25, 560]
+    df['C'] = df['B'].copy() + 10
+    df['D'] = df['C'].copy() + 20
+
+    my_dict = dict({'B': 40, 'C': 50, 'D': 150})
+
+    print(df)
+    print(my_dict)
+
+    print(df_contains_dict(df, my_dict))

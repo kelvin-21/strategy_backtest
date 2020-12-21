@@ -1,5 +1,6 @@
 import pandas as  pd
 import numpy as np
+import logging
 
 from service import DataCleaner, TechIndicatorEngine, CCI, SMA
 from config import DATE_TIME, CLOSE, OPEN_POSITION, CLOSE_POSITION, NO_EVENT, BULLISH, BEARISH
@@ -26,7 +27,7 @@ class Backtest():
         self.trade_record.initialize()
         self.report.initialize(self.strategies)
         self.initialize_all_ti_param()
-        print('[BACKTEST] Initializated')
+        # print('[BACKTEST] Initializated')
         
     def initialize_all_ti_param(self):
         for strategy in self.strategies:
@@ -54,12 +55,12 @@ class Backtest():
     
     def data_preprocess(self):
         self.data = self.cleaner.clean(self.data)
-        print('[BACKTEST] Finished data pre-process')
+        logging.debug('[BACKTEST] Finished data pre-process')
         
     def compute_technical_indicator(self):
         for param in self.all_ti_param:
             self.data = self.ti_engine.compute(self.data, param)
-        print('[BACKTEST] Finished computation on technical indicators')
+        logging.debug('[BACKTEST] Finished computation on technical indicators')
         
     def back_test(self):
         for i in self.data.index:
@@ -70,11 +71,11 @@ class Backtest():
                     price = self.data.at[i, CLOSE]
                     self.trade_record.record_event(date_time, strategy, event, rule, price)
         self.trade_record.calculate_return(self.strategies)
-        print('[BACKTEST] Finished all backtest')
+        logging.info('[BACKTEST] Finished all backtest')
     
-    def gen_report(self):
-        self.report.generate_report(self.strategies, self.trade_record.df)
-        print('[BACKTEST] Generated all reports')
+    def gen_report(self, only=None):
+        self.report.generate_report(self.strategies, self.trade_record.df, only)
+        logging.info('[BACKTEST] Generated requested reports')
     
     def run(self):
         self.initialize()

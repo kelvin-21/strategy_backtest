@@ -87,7 +87,7 @@ class YearMonthReport(Report):
 
     def calculate_by_year_month(self, trade_summary: pd.DataFrame) -> dict:
         calculation = {}
-        df = trade_summary
+        df = trade_summary.copy()
         df[YEAR] = df[ENTRY_T].apply(lambda dt: dtStr_to_dt(dt).year)
         df[MONTH] = df[ENTRY_T].apply(lambda dt: dtStr_to_dt(dt).month)
 

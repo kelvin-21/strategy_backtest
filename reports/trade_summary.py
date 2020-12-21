@@ -2,10 +2,15 @@ import pandas as pd
 import numpy as np
 
 from interfaces import Report
+from utilities import str_time_diff_in_days
+from service import CalenderService
 from config import ENTRY_T, EXIT_T, DURATION, STRATEGY, RULE, ENTRY_PRICE, EXIT_PRICE, RETURN, OPEN_POSITION, CLOSE_POSITION, DATE_TIME, EVENT, PRICE
 
 
 class TradeSummary(Report):
+    def __init__(self):
+        super(TradeSummary, self).__init__()
+        self.calendar_service = CalenderService()
 
     def initialize(self):
         self.df = pd.DataFrame()
@@ -36,7 +41,7 @@ class TradeSummary(Report):
                         new_row = {
                             ENTRY_T:        df.at[i, DATE_TIME],
                             EXIT_T:         close_pos.at[0, DATE_TIME],
-                            DURATION:       None,
+                            DURATION:       self.calendar_service.time_diff_market_days(df.at[i, DATE_TIME], close_pos.at[0, DATE_TIME]),
                             STRATEGY:       strategy.name,
                             RULE:           close_pos.at[0, RULE],
                             ENTRY_PRICE:    df.at[i, PRICE],
