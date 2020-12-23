@@ -1,10 +1,11 @@
 import numpy as np
 
+from model.param import CCIParam
 from config import HIGH, LOW, CLOSE
 
 class CCI():
     
-    def __init__(self, param):
+    def __init__(self, param: CCIParam):
         self.param = param
         
     def compute(self, data):
