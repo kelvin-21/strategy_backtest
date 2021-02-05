@@ -41,10 +41,10 @@ def run_backtest():
     
     cci_bearish_strategy_creator = CCIBearishStrategyCreator(
         period = 20,
-        ground = -150, 
-        sky = 190, 
-        stop_gain = None, 
-        stop_loss = 300,
+        ground = -105, 
+        sky = 50, 
+        stop_gain = -950, 
+        stop_loss = 400,
         rebound_channel = (0.2, 0.5)
     )
 
@@ -56,7 +56,7 @@ def run_backtest():
 
     raw_data = pd.read_csv(hsi_hourly)
     # strategies = [CCI_bull_strategy, CCI_bear_strategy]
-    strategies = [CCI_bull_strategy]
+    strategies = [CCI_bear_strategy]
     backtest = Backtest(raw_data, strategies)
 
     backtest.initialize()
@@ -96,24 +96,25 @@ def run_tuner():
     raw_data = pd.read_csv('data/hsi_hourly.csv')
 
     # cci_bull_strategy_creator = CCIBullishStrategyCreator(
-    #     stop_gain = None, 
-    #     stop_loss = -300,
+    #     period = 20,
+    #     ground = -150,
+    #     sky = 190,
     #     rebound_channel = (0.8, 0.5)
     # )
     # fields_to_tune = (
-    #     FieldToTune(name='ground', low_bound=-200, up_bound=-50-1, step=5),
-    #     FieldToTune(name='sky', low_bound=50, up_bound=200+1, step=5)
+    #     FieldToTune(name='stop_gain', low_bound=300, up_bound=1000+1, step=50, extra_values=[99999]),
+    #     FieldToTune(name='stop_loss', low_bound=-300, up_bound=-1000-1, step=-50, extra_values=[-99999])
     # )
 
     cci_bear_strategy_creator = CCIBearishStrategyCreator(
         period = 20,
-        ground = -150,
-        sky = 190,
+        ground = -105,
+        sky = 50,
         rebound_channel = (0.2, 0.5)
     )
     fields_to_tune = (
-        FieldToTune(name='stop_gain', low_bound=300, up_bound=1000+1, step=50, extra_values=[99999]),
-        FieldToTune(name='stop_loss', low_bound=-300, up_bound=-1000-1, step=-50)
+        FieldToTune(name='stop_loss', low_bound=300, up_bound=1000+1, step=50, extra_values=[99999]),
+        FieldToTune(name='stop_gain', low_bound=-300, up_bound=-1000-1, step=-50, extra_values=[-99999])
     )
 
     strategy_tuner = StrategyTuner(raw_data, cci_bear_strategy_creator, fields_to_tune)

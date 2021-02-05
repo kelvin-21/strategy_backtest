@@ -34,10 +34,10 @@ class CCIBearishStrategyCreator():
 
     def basic_open_rule(self):
         rule = Rule(
-            name = 'basic_close_pos', 
+            name = 'basic_open_pos', 
             indicators_param = [CCIParam(self.period, 0.015)],
             ref = {TI_CCI: TI_CCI},
-            f = lambda data, ref, entry_i, i: (data.at[i-1, ref[TI_CCI]] > self.ground) & (data.at[i, ref[TI_CCI]] < self.ground)
+            f = lambda data, ref, entry_i, i: (data.at[i-1, ref[TI_CCI]] > self.sky) & (data.at[i, ref[TI_CCI]] < self.sky)
         )
         return rule
 

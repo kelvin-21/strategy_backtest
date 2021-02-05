@@ -22,13 +22,8 @@ class StrategyTuner():
         self.initialize()
 
     def initialize(self):
-        # strategy
         self.update_strategy_param()
-
-        # backtest
         self.initialize_backtest()
-
-        # report
         self.report = StrategyTunerReport(self.strategy, self.strategy_creator)
 
     def initialize_backtest(self):
@@ -55,9 +50,10 @@ class StrategyTuner():
         self.record_simulation()
     
     def record_simulation(self):
-        backtest_result = dict(self.backtest.report.general_report.df.iloc[0])
-        param_config = self.strategy_creator.__dict__
-        self.report.write(backtest_result, param_config)
+        self.report.write(
+            backtest_result = dict(self.backtest.report.general_report.df.iloc[0]),
+            param_config = self.strategy_creator.__dict__
+        )
 
     def update_strategy_param(self, param_values=None):
         if not param_values:
